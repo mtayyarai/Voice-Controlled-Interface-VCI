@@ -13,7 +13,7 @@ reflection of state — no forms, no buttons for domain actions.
 
 ### DEMO-01
 
-[![DEMO-01 — VCI walkthrough](https://img.youtube.com/vi/2BkAJLVvpi4/maxresdefault.jpg)](https://youtu.be/2BkAJLVvpi4)
+[![DEMO-01 — VCI walkthrough](https://img.youtube.com/vi/2BkAJLVvpi4/hqdefault.jpg)](https://youtu.be/2BkAJLVvpi4)
 
 ▶️ Watch on YouTube: <https://youtu.be/2BkAJLVvpi4>
 
