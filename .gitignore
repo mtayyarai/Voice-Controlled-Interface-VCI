@@ -1,0 +1,29 @@
+# Secrets
+.env
+.env.*
+!.env.example
+API.txt
+*.key
+*.pem
+secrets/
+
+# Node / Vercel
+node_modules/
+.vercel/
+.next/
+dist/
+build/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

@@ -1,0 +1,1776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VCI Docs — Voice Controlled Interface</title>
+<style>
+  :root {
+    --bg:            #0a0b10;
+    --bg-grid:       #0d0e14;
+    --bg-elev-1:     #0f1017;
+    --panel:         #14161e;
+    --panel-2:       #1a1d26;
+    --panel-hover:   #1e2029;
+    --code-bg:       #06070b;
+    --border:        #21232c;
+    --border-strong: #2c2f3a;
+    --text:          #eef0f5;
+    --text-2:        #b8bec9;
+    --muted:         #7a8091;
+    --muted-2:       #5b6070;
+    --accent:        #7c8cff;
+    --accent-hover:  #94a2ff;
+    --accent-2:      #b072ff;
+    --pink:          #ff7aa8;
+    --success:       #34d399;
+    --warn:          #fbbf24;
+    --danger:        #f87171;
+    --gradient:      linear-gradient(120deg, #7c8cff 0%, #b072ff 45%, #ff7aa8 100%);
+    --gradient-soft: linear-gradient(120deg, rgba(124,140,255,0.15), rgba(176,114,255,0.12), rgba(255,122,168,0.10));
+    --radius:        10px;
+    --radius-lg:     16px;
+    --sidebar-w:     264px;
+    --shadow-sm:     0 1px 2px rgba(0,0,0,0.35);
+    --shadow-md:     0 4px 14px rgba(0,0,0,0.35), 0 2px 4px rgba(0,0,0,0.2);
+    --shadow-lg:     0 24px 48px -12px rgba(0,0,0,0.6), 0 8px 20px -8px rgba(0,0,0,0.35);
+    --glow:          0 0 80px -20px rgba(124,140,255,0.35);
+  }
+  html.light {
+    --bg:            #ffffff;
+    --bg-grid:       #fafbfc;
+    --bg-elev-1:     #f8fafc;
+    --panel:         #ffffff;
+    --panel-2:       #f4f6fa;
+    --panel-hover:   #eef1f6;
+    --code-bg:       #0b0d13;
+    --border:        #e5e7ee;
+    --border-strong: #d0d5df;
+    --text:          #0f172a;
+    --text-2:        #334155;
+    --muted:         #64748b;
+    --muted-2:       #94a3b8;
+    --accent:        #5461ea;
+    --accent-hover:  #4249d6;
+    --accent-2:      #8b5cf6;
+    --shadow-sm:     0 1px 2px rgba(15,23,42,0.06);
+    --shadow-md:     0 6px 20px -8px rgba(15,23,42,0.15), 0 2px 6px -2px rgba(15,23,42,0.08);
+    --shadow-lg:     0 24px 48px -18px rgba(15,23,42,0.18), 0 10px 24px -10px rgba(15,23,42,0.10);
+    --glow:          0 0 60px -20px rgba(84,97,234,0.25);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                 "Helvetica Neue", Arial, sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01";
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Subtle grid background */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      linear-gradient(to right, var(--bg-grid) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--bg-grid) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+    opacity: 0.6;
+  }
+  html.light body::before { opacity: 0.5; }
+
+  ::selection { background: rgba(124,140,255,0.35); color: var(--text); }
+
+  a { color: var(--accent); text-decoration: none; transition: color 0.15s ease; }
+  a:hover { color: var(--accent-hover); text-decoration: underline; text-underline-offset: 3px; }
+
+  /* ---------- Header ---------- */
+  header.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 28px;
+    background: rgba(10, 11, 16, 0.75);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border-bottom: 1px solid var(--border);
+  }
+  html.light header.topbar { background: rgba(255,255,255,0.78); }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+  }
+  .brand-mark {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: var(--gradient);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 14px; font-weight: 800;
+    box-shadow: 0 4px 12px rgba(124,140,255,0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+  .brand-sub {
+    color: var(--muted);
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0;
+    margin-left: 6px;
+  }
+  .topbar-controls { display: flex; align-items: center; gap: 8px; }
+  .icon-btn {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--text-2);
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-size: 12.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .icon-btn:hover {
+    border-color: var(--border-strong);
+    background: var(--panel-hover);
+    color: var(--text);
+    text-decoration: none;
+  }
+  .icon-btn.primary {
+    background: var(--gradient);
+    border-color: transparent;
+    color: white;
+    box-shadow: 0 4px 12px -2px rgba(124,140,255,0.4);
+  }
+  .icon-btn.primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px -2px rgba(124,140,255,0.5); }
+  .icon-btn.mobile-only { display: none; }
+  @media (max-width: 900px) { .icon-btn.mobile-only { display: inline-flex; } }
+
+  /* ---------- Layout ---------- */
+  .layout {
+    display: grid;
+    grid-template-columns: var(--sidebar-w) 1fr;
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+
+  aside.sidebar {
+    position: sticky;
+    top: 65px;
+    align-self: start;
+    height: calc(100vh - 65px);
+    overflow-y: auto;
+    padding: 32px 12px 40px 28px;
+    border-right: 1px solid var(--border);
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+  aside.sidebar::-webkit-scrollbar { width: 6px; }
+  aside.sidebar::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+
+  .sidebar h4 {
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted-2);
+    margin: 22px 10px 8px;
+    font-weight: 700;
+  }
+  .sidebar h4:first-child { margin-top: 0; }
+  .sidebar a {
+    display: block;
+    padding: 6px 10px;
+    color: var(--text-2);
+    font-size: 13.5px;
+    font-weight: 500;
+    border-radius: 7px;
+    text-decoration: none;
+    position: relative;
+    transition: color 0.15s ease, background 0.15s ease;
+  }
+  .sidebar a:hover { color: var(--text); background: var(--panel); text-decoration: none; }
+  .sidebar a.active {
+    color: var(--text);
+    background: var(--panel);
+    font-weight: 600;
+  }
+  .sidebar a.active::before {
+    content: "";
+    position: absolute;
+    left: -12px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    border-radius: 2px;
+    background: var(--gradient);
+  }
+  .sidebar .badge {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: rgba(176,114,255,0.15);
+    color: var(--accent-2);
+    font-size: 9.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    vertical-align: middle;
+    border: 1px solid rgba(176,114,255,0.25);
+  }
+
+  /* ---------- Main content ---------- */
+  main.content {
+    padding: 56px 56px 100px;
+    max-width: 920px;
+    min-width: 0;
+  }
+  main.content h1 {
+    font-size: 44px;
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+    margin: 0 0 12px;
+    font-weight: 700;
+  }
+  main.content .gradient-text {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+  main.content .lead {
+    color: var(--text-2);
+    font-size: 17px;
+    line-height: 1.65;
+    margin: 0 0 24px;
+  }
+  main.content h2 {
+    font-size: 26px;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    margin: 72px 0 16px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  main.content section:first-of-type h2 { border-top: none; padding-top: 0; margin-top: 0; }
+  main.content h3 {
+    font-size: 18px;
+    letter-spacing: -0.01em;
+    margin: 32px 0 10px;
+    font-weight: 650;
+  }
+  main.content p, main.content li {
+    font-size: 15px;
+    color: var(--text-2);
+  }
+  main.content ul, main.content ol { padding-left: 22px; }
+  main.content li { margin: 6px 0; }
+  main.content strong { color: var(--text); font-weight: 600; }
+  main.content em { color: var(--text); }
+
+  /* ---------- Inline code ---------- */
+  code {
+    font-family: "JetBrains Mono", ui-monospace, "SF Mono", Consolas, Menlo, monospace;
+    font-size: 13px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 1.5px 6px;
+    border-radius: 5px;
+    color: var(--accent-hover);
+  }
+  html.light code { color: var(--accent-hover); }
+
+  /* ---------- Code blocks ---------- */
+  pre {
+    background: var(--code-bg);
+    color: #e6edf3;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 42px 16px 16px;
+    overflow-x: auto;
+    font-size: 12.5px;
+    line-height: 1.7;
+    position: relative;
+    margin: 16px 0;
+    box-shadow: var(--shadow-md);
+    scrollbar-width: thin;
+    scrollbar-color: #2c2f3a transparent;
+  }
+  pre::-webkit-scrollbar { height: 8px; }
+  pre::-webkit-scrollbar-thumb { background: #2c2f3a; border-radius: 4px; }
+  pre::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 30px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.03), transparent);
+    border-bottom: 1px solid #1a1d26;
+    pointer-events: none;
+  }
+  pre::after {
+    content: "•  •  •";
+    position: absolute;
+    top: 4px; left: 14px;
+    font-size: 14px;
+    color: #3a3f4d;
+    letter-spacing: 3px;
+    line-height: 1;
+    pointer-events: none;
+  }
+  pre code {
+    background: transparent;
+    border: none;
+    padding: 0;
+    font-size: 12.75px;
+    color: #e6edf3;
+    font-family: "JetBrains Mono", ui-monospace, "SF Mono", Consolas, Menlo, monospace;
+  }
+  /* Syntax highlighting classes (populated by JS) */
+  pre .tok-key    { color: #ff7aa8; }         /* keywords, "type": */
+  pre .tok-str    { color: #a5f3c8; }         /* strings */
+  pre .tok-num    { color: #f6c177; }         /* numbers */
+  pre .tok-bool   { color: #b072ff; }         /* booleans */
+  pre .tok-com    { color: #6a7180; font-style: italic; } /* comments */
+  pre .tok-punc   { color: #8892a6; }         /* braces/brackets */
+  pre .tok-kw     { color: #7c8cff; font-weight: 600; }   /* JS keywords */
+  pre .tok-fn     { color: #94a2ff; }         /* function names */
+
+  .copy-btn {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 500;
+    border: 1px solid #2c2f3a;
+    background: rgba(255,255,255,0.04);
+    color: #cfd6e3;
+    border-radius: 6px;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.15s ease;
+    z-index: 2;
+    font-family: inherit;
+  }
+  pre:hover .copy-btn { opacity: 1; }
+  .copy-btn:hover { border-color: var(--accent); color: #fff; background: rgba(124,140,255,0.15); }
+
+  /* ---------- Callouts ---------- */
+  .callout {
+    position: relative;
+    background: var(--panel);
+    padding: 14px 16px 14px 46px;
+    border-radius: 10px;
+    margin: 18px 0;
+    font-size: 14px;
+    color: var(--text-2);
+    border: 1px solid var(--border);
+    line-height: 1.6;
+  }
+  .callout::before {
+    content: "i";
+    position: absolute;
+    left: 14px;
+    top: 15px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    font-family: Georgia, serif;
+    font-style: italic;
+  }
+  .callout.warn    { background: linear-gradient(to right, rgba(251,191,36,0.08), var(--panel)); border-color: rgba(251,191,36,0.25); }
+  .callout.warn::before    { content: "!"; background: var(--warn); font-family: inherit; font-style: normal; }
+  .callout.danger  { background: linear-gradient(to right, rgba(248,113,113,0.08), var(--panel)); border-color: rgba(248,113,113,0.25); }
+  .callout.danger::before  { content: "!"; background: var(--danger); font-family: inherit; font-style: normal; }
+  .callout.success { background: linear-gradient(to right, rgba(52,211,153,0.08), var(--panel)); border-color: rgba(52,211,153,0.25); }
+  .callout.success::before { content: "✓"; background: var(--success); font-family: inherit; font-style: normal; font-size: 11px; }
+  .callout .callout-title {
+    font-weight: 700;
+    display: block;
+    margin-bottom: 4px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text);
+  }
+
+  /* ---------- Tables ---------- */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 16px 0;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--panel);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+  th, td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  th {
+    background: var(--panel-2);
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    border-bottom-color: var(--border-strong);
+  }
+  td { color: var(--text-2); }
+  tbody tr { transition: background 0.15s ease; }
+  tbody tr:hover { background: var(--panel-2); }
+  tr:last-child td { border-bottom: none; }
+
+  /* ---------- Chips ---------- */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--text-2);
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    font-weight: 600;
+  }
+  .chip.optional { color: var(--accent-2); border-color: rgba(176,114,255,0.35); background: rgba(176,114,255,0.08); }
+  .chip.required { color: var(--success); border-color: rgba(52,211,153,0.35); background: rgba(52,211,153,0.08); }
+  h2 .chip { text-transform: none; font-size: 11px; font-weight: 600; }
+
+  /* Section anchors */
+  section { scroll-margin-top: 90px; }
+  h2, h3 { scroll-margin-top: 90px; }
+
+  /* ---------- Prev/Next pager ---------- */
+  .pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 72px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .pager a {
+    display: block;
+    padding: 16px 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--text);
+    background: var(--panel);
+    transition: all 0.15s ease;
+    font-weight: 600;
+  }
+  .pager a:hover {
+    border-color: var(--border-strong);
+    background: var(--panel-hover);
+    text-decoration: none;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+  .pager .label {
+    color: var(--muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    position: relative;
+    background: var(--gradient-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 40px 40px 32px;
+    margin: 0 0 48px;
+    overflow: hidden;
+    box-shadow: var(--glow);
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(600px 200px at 15% 0%, rgba(124,140,255,0.25), transparent 70%),
+      radial-gradient(500px 240px at 85% 20%, rgba(176,114,255,0.20), transparent 70%),
+      radial-gradient(400px 200px at 50% 100%, rgba(255,122,168,0.15), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .hero > * { position: relative; z-index: 1; }
+  .hero h1 { margin-top: 0; font-size: 48px; }
+  .hero .lead { margin-bottom: 20px; color: var(--text-2); font-size: 18px; max-width: 640px; }
+  .hero .meta { display: flex; flex-wrap: wrap; gap: 8px; }
+  .hero .hero-actions { margin-top: 24px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .hero-actions .icon-btn { padding: 10px 18px; font-size: 13.5px; }
+
+  /* ---------- Cards ---------- */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+    margin: 20px 0;
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    position: relative;
+    transition: all 0.2s ease;
+    overflow: hidden;
+  }
+  .card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--gradient);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+    z-index: 0;
+    mix-blend-mode: overlay;
+  }
+  .card:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  .card:hover::before { opacity: 0.06; }
+  .card > * { position: relative; z-index: 1; }
+  .card-icon {
+    width: 36px; height: 36px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, rgba(124,140,255,0.15), rgba(176,114,255,0.10));
+    border: 1px solid rgba(124,140,255,0.25);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+  .card-icon svg { width: 18px; height: 18px; }
+  .card h4 { margin: 0 0 6px; font-size: 14.5px; font-weight: 650; color: var(--text); }
+  .card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+
+  /* ---------- ASCII diagram ---------- */
+  pre.diagram {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text-2);
+    background: var(--panel);
+    padding: 24px 20px;
+    box-shadow: none;
+  }
+  pre.diagram::before, pre.diagram::after { display: none; }
+
+  /* ---------- Fade-in on scroll ---------- */
+  section {
+    animation: fadeUp 0.5s ease-out both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    aside.sidebar {
+      position: fixed;
+      top: 65px;
+      left: 0;
+      bottom: 0;
+      height: auto;
+      width: 288px;
+      background: var(--bg);
+      border-right: 1px solid var(--border);
+      transform: translateX(-100%);
+      transition: transform 0.2s ease;
+      z-index: 20;
+    }
+    aside.sidebar.open { transform: translateX(0); box-shadow: var(--shadow-lg); }
+    main.content { padding: 32px 20px 60px; }
+    .hero { padding: 28px 24px; }
+    .hero h1 { font-size: 34px; }
+    main.content h1 { font-size: 32px; }
+    main.content h2 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">V</span>
+    <span>VCI<span class="brand-sub">/ Voice Controlled Interface</span></span>
+  </div>
+  <div class="topbar-controls">
+    <button class="icon-btn mobile-only" id="menu-toggle" aria-label="Toggle menu">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      Menu
+    </button>
+    <button class="icon-btn" id="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>
+      Theme
+    </button>
+    <a class="icon-btn primary" href="#getting-started">Get started →</a>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <h4>Overview</h4>
+    <a href="#introduction">Introduction</a>
+    <a href="#philosophy">Philosophy</a>
+    <a href="#when-to-use">When to Use</a>
+
+    <h4>Getting Started</h4>
+    <a href="#getting-started">Getting Started</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#modules">Required Modules</a>
+    <a href="#file-layout">File Layout</a>
+
+    <h4>Building an App</h4>
+    <a href="#data-model">Data Model</a>
+    <a href="#storage">Storage Module</a>
+    <a href="#tool-schemas">Tool Schemas</a>
+    <a href="#instructions">Instructions Template</a>
+    <a href="#tool-handler">Tool Handler</a>
+
+    <h4>Realtime API</h4>
+    <a href="#endpoints">Endpoints</a>
+    <a href="#models-voices">Models &amp; Voices</a>
+    <a href="#session-update">session.update</a>
+    <a href="#function-calls">Function Calls</a>
+    <a href="#webrtc-recipe">WebRTC Recipe</a>
+    <a href="#event-reference">Event Reference</a>
+
+    <h4>MCP Support <span class="badge">Optional</span></h4>
+    <a href="#mcp-what">What is MCP?</a>
+    <a href="#mcp-enable">Enabling MCP</a>
+    <a href="#mcp-remote">Remote MCP Servers</a>
+    <a href="#mcp-tools">Wiring MCP Tools</a>
+    <a href="#mcp-security">Security &amp; Approvals</a>
+    <a href="#mcp-when">When to Add MCP</a>
+
+    <h4>Session &amp; Controls</h4>
+    <a href="#three-buttons">Three-Button Model</a>
+    <a href="#session-phases">Session Phases</a>
+    <a href="#ptt">Push-to-Talk</a>
+    <a href="#idle-timeout">Inactivity Timeout</a>
+
+    <h4>UI Layer</h4>
+    <a href="#states">Status Pill</a>
+    <a href="#ui-requirements">UI Requirements</a>
+    <a href="#accessibility">Accessibility</a>
+
+    <h4>Security</h4>
+    <a href="#security-personal">Personal Use</a>
+    <a href="#security-public">Public Deployment</a>
+
+    <h4>Reference</h4>
+    <a href="#checklist">Implementation Checklist</a>
+    <a href="#test-script">Manual Test Script</a>
+    <a href="#environment">Environment</a>
+    <a href="#limitations">Known Limitations</a>
+    <a href="#extensions">Extension Patterns</a>
+  </aside>
+
+  <main class="content">
+
+    <div class="hero">
+      <h1>Voice Controlled <span class="gradient-text">Interface</span></h1>
+      <p class="lead">
+        A reusable framework spec for building apps where <strong>voice is the primary interface</strong>.
+        Users tap a mic once and manage the entire app by talking. The screen is a read-only reflection
+        of state — no forms, no buttons for domain actions.
+      </p>
+      <div class="meta">
+        <span class="chip">HTML + CSS + JS</span>
+        <span class="chip">OpenAI Realtime</span>
+        <span class="chip">WebRTC</span>
+        <span class="chip">Function Calling</span>
+        <span class="chip optional">MCP Optional</span>
+      </div>
+      <div class="hero-actions">
+        <a class="icon-btn primary" href="#getting-started">Get started →</a>
+        <a class="icon-btn" href="#three-buttons">See the standard</a>
+      </div>
+    </div>
+
+    <!-- ============================== Overview ============================== -->
+
+    <section id="introduction">
+      <h2>Introduction</h2>
+      <p>
+        Hand this document to any coding agent (or developer) to give an app real-time
+        voice control. It is domain-agnostic: plug in your data model + actions and the
+        pattern works identically for a todo list, a note-taker, an expense tracker, a
+        kanban board, a habit tracker, or anything else with a bounded action vocabulary.
+      </p>
+      <p>
+        VCI is built on OpenAI's Realtime API over WebRTC — a single bidirectional
+        streaming connection carrying mic audio in and assistant audio out, with tool
+        calls in between. No browser-native STT/TTS (robotic and unreliable). No
+        separate <code>chat/completions</code> + <code>audio/speech</code> round-trips
+        (slow and expensive).
+      </p>
+    </section>
+
+    <section id="philosophy">
+      <h2>Philosophy</h2>
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.8L20 10.7l-4.7 3.6L17 20l-5-3.4L7 20l1.7-5.7L4 10.7l6.1-1.9z"/></svg></div>
+          <h4>Agent-first UI</h4>
+          <p>The AI <em>is</em> the product. UI exists only to reflect state.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg></div>
+          <h4>No dual controls</h4>
+          <p>Don't ship both voice and click-to-edit for the same action. Pick voice.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <h4>Read-only rendering</h4>
+          <p>The DOM shows state; mutation happens only via voice-triggered tool calls.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 011.4 0l1.6 1.6a1 1 0 010 1.4L9 18l-4 1 1-4 8.7-8.7z"/><path d="M13 7l4 4"/></svg></div>
+          <h4>Tools, not chat</h4>
+          <p>The LLM maps utterances to a fixed set of domain-specific tools. It does not freeform-edit state.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18"/><circle cx="7" cy="15" r="1"/></svg></div>
+          <h4>Local by default</h4>
+          <p>State lives client-side unless there's a real multi-user need.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16M4 12h16M4 16h10"/></svg></div>
+          <h4>Small tool surface</h4>
+          <p>Keep to ≤ 8 tools per app. More means you're conflating actions.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="when-to-use">
+      <h2>When to Use VCI</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Good fit</th><th>Bad fit</th></tr></thead>
+        <tbody>
+        <tr>
+          <td>Personal tools with a bounded action vocabulary — to-do, notes, timers, expenses, journaling, kanban, habit trackers, shopping lists.</td>
+          <td>Multi-user collaborative apps needing a real backend to broker state.</td>
+        </tr>
+        <tr>
+          <td>Solo users on a single device.</td>
+          <td>Public production deployments without a token-minting backend.</td>
+        </tr>
+        <tr>
+          <td>Apps where every meaningful action is known ahead of time.</td>
+          <td>Apps requiring precise pointer selection, dragging, or dense forms.</td>
+        </tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ============================== Getting Started ============================== -->
+
+    <section id="getting-started">
+      <h2>Getting Started</h2>
+      <p>The 5 steps to go from empty folder to working VCI app:</p>
+      <ol>
+        <li>Define the <a href="#data-model">data model</a> and <a href="#storage">storage mutations</a>.</li>
+        <li>Write <a href="#tool-schemas">tool schemas</a> — one per action.</li>
+        <li>Fill in the <a href="#instructions">instructions template</a> with tone + matching rules.</li>
+        <li>Wire the <a href="#webrtc-recipe">WebRTC connection</a> and <a href="#tool-handler">tool handler</a>.</li>
+        <li>Render the <a href="#ui-requirements">read-only UI</a> and the three session buttons.</li>
+      </ol>
+      <div class="callout success">
+        <span class="callout-title">Reference implementation</span>
+        A voice-first to-do list built to this spec lives at <code>todo-voice-agent/</code>. Read that
+        alongside this doc for concrete file-by-file examples.
+      </div>
+    </section>
+
+    <section id="architecture">
+      <h2>Architecture</h2>
+      <p>
+        Real-time voice over WebRTC to OpenAI's Realtime API. STT, intent parsing, and TTS
+        happen in a single bidirectional streaming connection. Tool calls travel over a
+        WebRTC data channel as JSON.
+      </p>
+<pre class="diagram">┌────────────┐   mic audio    ┌──────────────────────┐
+│  Browser   │───────────────>│ OpenAI Realtime API  │
+│            │<───────────────│ (gpt-realtime,WebRTC)│
+│            │  assistant     └──────────┬───────────┘
+│  ┌──────┐  │  audio                    │
+│  │ UI   │  │                           │ function calls
+│  │(read │  │                           │ (JSON on data
+│  │ only)│  │                           │  channel)
+│  └──────┘  │                           ▼
+│  ┌──────┐  │                  executed locally
+│  │Store │◄─┼──────────────────against storage
+│  └──────┘  │
+└────────────┘</pre>
+    </section>
+
+    <section id="modules">
+      <h2>Required Modules</h2>
+      <p>Every VCI app has four modules. Names and language are flexible — <strong>contracts are not</strong>.</p>
+
+      <h3>storage <span class="chip required">Required</span></h3>
+      <ul>
+        <li><code>readState()</code> → current domain state (typically an array of items).</li>
+        <li>One mutation function per state-changing action (<code>add</code>, <code>remove</code>, <code>update</code>, etc.). Each returns the mutated entity or <code>null</code>.</li>
+        <li>Backend: <code>localStorage</code> (default), IndexedDB, or a remote API.</li>
+      </ul>
+
+      <h3>ui <span class="chip required">Required</span></h3>
+      <ul>
+        <li><code>renderState(state)</code> — repaint UI from state. <strong>No interactive controls for domain actions.</strong></li>
+        <li><code>appendLog(userText, assistantText, kind)</code> — visible conversation log.</li>
+        <li><code>setStatus(status, label)</code> — see <a href="#states">Interaction States</a>.</li>
+        <li><code>setMicListening(bool)</code>, <code>setMicEnabled(bool)</code>, <code>showKeyPanel(bool)</code>.</li>
+      </ul>
+
+      <h3>realtime <span class="chip required">Required</span></h3>
+      <ul>
+        <li><code>connect({ apiKey, onTool, getContext, onEvent })</code> — resolves when connected; throws on failure.</li>
+        <li><code>disconnect()</code> — closes peer connection, data channel, mic tracks.</li>
+        <li><code>isConnected()</code> → boolean.</li>
+        <li><code>refreshContext()</code> — resend <code>session.update</code> with fresh state.</li>
+      </ul>
+
+      <h3>app <span class="chip required">Required</span></h3>
+      <ul>
+        <li>Wire the three session buttons (Start Session, Push to Talk, End Session) — see <a href="#three-buttons">§ Three-Button Model</a>.</li>
+        <li>Run the 3-minute inactivity timer — see <a href="#idle-timeout">§ Inactivity Timeout</a>.</li>
+        <li>Implement the tool-call handler — dispatch to storage mutations, re-render, return fresh state.</li>
+        <li>Manage the API-key entry flow.</li>
+      </ul>
+    </section>
+
+    <section id="file-layout">
+      <h2>File Layout</h2>
+<pre>&lt;app&gt;/
+  index.html
+  css/styles.css
+  js/
+    app.js       orchestration + tool handler
+    realtime.js  WebRTC + Realtime API + tool schemas
+    storage.js   domain persistence + mutations
+    ui.js        DOM rendering (read-only)</pre>
+      <p>
+        Keep each file ≤ ~300 lines. If <code>realtime.js</code> grows beyond that, domain
+        logic is leaking in — move it to <code>app.js</code>.
+      </p>
+    </section>
+
+    <!-- ============================== Building an App ============================== -->
+
+    <section id="data-model">
+      <h2>Data Model</h2>
+      <p>One canonical shape per entity. Give each a stable <code>id</code> (UUID). Example (notes domain):</p>
+<pre><code>{
+  id:        string,   // crypto.randomUUID()
+  title:     string,
+  body:      string,
+  createdAt: number
+}</code></pre>
+      <p>
+        The model uses <code>id</code> to reference existing entities across turns. Do not
+        expose position-only ids (like array indices) — they shift when items are added/removed.
+      </p>
+    </section>
+
+    <section id="storage">
+      <h2>Storage Module</h2>
+      <p>One function per meaningful action. Keep them boring — no clever aggregation, no side effects beyond persistence.</p>
+<pre><code>addNote(title, body)         → note
+updateNote(id, fields)       → note | null
+deleteNote(id)               → note | null
+readState()                  → note[]</code></pre>
+    </section>
+
+    <section id="tool-schemas">
+      <h2>Tool Schemas</h2>
+      <p>
+        One tool per action, using the Realtime API's <strong>flat</strong> function
+        schema. Note: this is <em>not</em> the nested Chat Completions shape.
+      </p>
+<pre><code>[
+  {
+    type: "function",
+    name: "add_note",
+    description: "Create a new note.",
+    parameters: {
+      type: "object",
+      properties: {
+        title: { type: "string" },
+        body:  { type: "string" }
+      },
+      required: ["title"]
+    }
+  },
+  {
+    type: "function",
+    name: "delete_note",
+    description: "Delete a note by id from the current list.",
+    parameters: {
+      type: "object",
+      properties: { note_id: { type: "string" } },
+      required: ["note_id"]
+    }
+  }
+  // one per domain action; ideally ≤ 8 total
+]</code></pre>
+      <div class="callout warn">
+        <span class="callout-title">Keep the surface small</span>
+        More than ~8 tools means you're conflating actions or over-specifying. Merge or generalize.
+        Consider one <code>update_note</code> instead of separate <code>set_title</code> / <code>set_body</code>.
+      </div>
+    </section>
+
+    <section id="instructions">
+      <h2>Instructions Template</h2>
+      <p>
+        The <code>session.instructions</code> string tells the model its role, tone,
+        matching rules, and current state. Fill in <code>&lt;DOMAIN&gt;</code>,
+        <code>&lt;verbs&gt;</code>, and inject the state snapshot.
+      </p>
+<pre><code>You are a warm, natural voice assistant for a &lt;DOMAIN&gt; app.
+Speak briefly and conversationally — never sound robotic.
+
+When the user asks to &lt;verbs&gt;, call the matching tool.
+After a tool call, briefly confirm what happened in one short sentence
+(e.g. "Added buy milk." or "Deleted the dentist one.").
+For small talk or unclear commands, respond briefly without a tool.
+
+Rules for resolving references to existing items:
+- Use the state below to match phrases like "the X one" or "the second Y".
+- "The first/second/nth" refers to position in the list, 1-indexed.
+- Match by loose semantic similarity, but only when unambiguous.
+- If you cannot confidently match, say so — never guess.
+- After every tool call, the response includes the fresh state.
+
+Current state:
+&lt;JSON dump of storage.readState()&gt;</code></pre>
+    </section>
+
+    <section id="tool-handler">
+      <h2>Tool Handler</h2>
+<pre><code>async function handleToolCall(name, args) {
+  switch (name) {
+    case "add_note": {
+      const note = Storage.addNote(args.title, args.body);
+      UI.renderState(Storage.readState());
+      return { ok: true, action: "added", note,
+               current_state: Storage.readState() };
+    }
+    // ... one branch per tool
+  }
+  return { ok: false, reason: "unknown_tool" };
+}</code></pre>
+      <div class="callout">
+        <span class="callout-title">Always return current_state</span>
+        Every tool response MUST include <code>current_state</code> so the model sees the
+        fresh snapshot without another round trip. This is the single most important
+        pattern for reliable multi-turn behavior.
+      </div>
+    </section>
+
+    <!-- ============================== Realtime API ============================== -->
+
+    <section id="endpoints">
+      <h2>Endpoints</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Purpose</th><th>Method + URL</th></tr></thead>
+        <tbody>
+        <tr>
+          <td>Mint ephemeral token</td>
+          <td><code>POST https://api.openai.com/v1/realtime/client_secrets</code></td>
+        </tr>
+        <tr>
+          <td>WebRTC SDP exchange</td>
+          <td><code>POST https://api.openai.com/v1/realtime/calls?model=&lt;model&gt;</code></td>
+        </tr>
+        </tbody>
+      </table></div>
+      <div class="callout warn">
+        <span class="callout-title">Expect API drift</span>
+        OpenAI has already renamed these endpoints once
+        (<code>/v1/realtime/sessions</code> → <code>/v1/realtime/client_secrets</code>,
+        <code>/v1/realtime</code> → <code>/v1/realtime/calls</code>). Verify against the
+        official docs when implementing.
+      </div>
+    </section>
+
+    <section id="models-voices">
+      <h2>Models &amp; Voices</h2>
+      <p><strong>Model:</strong> <code>gpt-realtime</code> (GA).</p>
+      <p><strong>Voices:</strong> <code>alloy</code>, <code>ash</code>, <code>ballad</code>, <code>cedar</code>, <code>coral</code>, <code>echo</code>, <code>marin</code>, <code>sage</code>, <code>shimmer</code>, <code>verse</code>.</p>
+      <p>Recommended defaults: <code>marin</code> (warm, natural) or <code>coral</code> (friendly).</p>
+
+      <h3>Token request</h3>
+<pre><code>POST /v1/realtime/client_secrets
+Authorization: Bearer &lt;apiKey&gt;
+Content-Type: application/json
+
+{
+  "session": {
+    "type":  "realtime",
+    "model": "gpt-realtime",
+    "audio": { "output": { "voice": "marin" } }
+  }
+}</code></pre>
+      <p>Response (top-level <code>value</code> is the ephemeral token, prefixed <code>ek_</code>):</p>
+<pre><code>{ "value": "ek_...", "expires_at": 1234567890, "session": { ... } }</code></pre>
+    </section>
+
+    <section id="session-update">
+      <h2>session.update</h2>
+      <p>
+        Send this the moment the data channel opens, and again after every state mutation.
+        <strong>VCI standardizes on manual turn detection</strong> — the client demarcates
+        every user turn via <code>input_audio_buffer.clear</code> on PTT press and
+        <code>input_audio_buffer.commit</code> on release.
+      </p>
+<pre><code>{
+  "type": "session.update",
+  "session": {
+    "type": "realtime",
+    "instructions": "&lt;see Instructions Template&gt;",
+    "tools": [ /* see Tool Schemas */ ],
+    "tool_choice": "auto",
+    "audio": {
+      "input": {
+        "transcription":  { "model": "whisper-1" },
+        "turn_detection": null
+      },
+      "output": { "voice": "marin" }
+    }
+  }
+}</code></pre>
+      <div class="callout">
+        <span class="callout-title">Prefer hands-free?</span>
+        Swap <code>turn_detection: null</code> for the server-VAD block below and skip the
+        PTT button; the model auto-detects turn starts and stops. VCI defaults to
+        push-to-talk because it gives the user explicit control, is cheaper (audio only
+        streams while PTT is held), and works better in noisy environments.
+      </div>
+<pre><code>"turn_detection": {
+  "type": "server_vad",
+  "threshold": 0.5,
+  "prefix_padding_ms": 300,
+  "silence_duration_ms": 500
+}</code></pre>
+    </section>
+
+    <section id="function-calls">
+      <h2>Function Calls</h2>
+      <p>When the model calls a tool, the data channel emits:</p>
+<pre><code>{
+  "type": "response.function_call_arguments.done",
+  "call_id": "call_...",
+  "name": "add_note",
+  "arguments": "{\"title\":\"...\"}"
+}</code></pre>
+      <p>Reply with the tool result:</p>
+<pre><code>{
+  "type": "conversation.item.create",
+  "item": {
+    "type":    "function_call_output",
+    "call_id": "&lt;same call_id&gt;",
+    "output":  "&lt;JSON.stringify(result)&gt;"
+  }
+}</code></pre>
+      <p>Then trigger the spoken confirmation:</p>
+<pre><code>{ "type": "response.create" }</code></pre>
+    </section>
+
+    <section id="webrtc-recipe">
+      <h2>WebRTC Recipe</h2>
+      <p>Copy-paste starter for the browser side:</p>
+<pre><code>// 1. Mint ephemeral token
+const tokenRes = await fetch(
+  "https://api.openai.com/v1/realtime/client_secrets",
+  {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer " + apiKey,
+      "Content-Type":  "application/json"
+    },
+    body: JSON.stringify({
+      session: {
+        type: "realtime",
+        model: MODEL,
+        audio: { output: { voice: VOICE } }
+      }
+    })
+  }
+);
+const { value: ephemeral } = await tokenRes.json();
+
+// 2. Peer connection
+const pc = new RTCPeerConnection();
+
+// 3. Remote audio playback
+const audioEl = document.getElementById("assistant-audio");
+pc.ontrack = e =&gt; { audioEl.srcObject = e.streams[0]; };
+
+// 4. Mic input
+const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+stream.getTracks().forEach(t =&gt; pc.addTrack(t, stream));
+
+// 5. Data channel for JSON events
+const dc = pc.createDataChannel("oai-events");
+dc.onopen    = () =&gt; sendSessionUpdate(dc);
+dc.onmessage = e  =&gt; handleEvent(JSON.parse(e.data));
+
+// 6. SDP offer/answer
+const offer = await pc.createOffer();
+await pc.setLocalDescription(offer);
+
+const answerSDP = await fetch(
+  `https://api.openai.com/v1/realtime/calls?model=${encodeURIComponent(MODEL)}`,
+  {
+    method: "POST",
+    body: offer.sdp,
+    headers: {
+      "Authorization": "Bearer " + ephemeral,
+      "Content-Type":  "application/sdp"
+    }
+  }
+).then(r =&gt; r.text());
+
+await pc.setRemoteDescription({ type: "answer", sdp: answerSDP });</code></pre>
+    </section>
+
+    <section id="event-reference">
+      <h2>Event Reference</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Event type</th><th>Use for</th></tr></thead>
+        <tbody>
+        <tr><td><code>input_audio_buffer.speech_started</code></td><td>status → "listening"</td></tr>
+        <tr><td><code>input_audio_buffer.speech_stopped</code></td><td>status → "thinking"</td></tr>
+        <tr><td><code>conversation.item.input_audio_transcription.completed</code></td><td>log the heard user text</td></tr>
+        <tr><td><code>response.function_call_arguments.done</code></td><td>execute tool → reply → respond</td></tr>
+        <tr><td><code>response.created</code></td><td>status → "speaking"</td></tr>
+        <tr><td><code>response.audio_transcript.done</code></td><td>log the assistant's text</td></tr>
+        <tr><td><code>response.done</code></td><td>status → "idle"</td></tr>
+        <tr><td><code>error</code></td><td>log + status → "error"</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ============================== MCP Support ============================== -->
+
+    <section id="mcp-what">
+      <h2>What is MCP? <span class="chip optional">Optional</span></h2>
+      <p>
+        <strong>Model Context Protocol (MCP)</strong> is an open standard for connecting AI
+        models to external tools and data sources. An MCP server exposes a set of tools
+        the model can call — think of it as a plugin system for the AI.
+      </p>
+      <p>
+        A VCI app's native tool surface is intentionally small (≤ 8 domain tools). MCP lets
+        you extend that surface <em>without polluting the core</em>: plug in Notion for
+        note sync, Google Calendar for events, a web search server, GitHub, Linear, and
+        so on.
+      </p>
+      <div class="callout">
+        <span class="callout-title">MCP is optional</span>
+        A perfectly good VCI app has zero MCP servers. Only add MCP when you need to
+        reach outside the app's own state (e.g. sync to an external service). See
+        <a href="#mcp-when">When to Add MCP</a>.
+      </div>
+    </section>
+
+    <section id="mcp-enable">
+      <h2>Enabling MCP</h2>
+      <p>
+        OpenAI's Realtime API supports remote MCP servers <strong>natively</strong> as a tool
+        type. You add them to the same <code>tools</code> array in the
+        <code>session.update</code> event, alongside your function tools:
+      </p>
+<pre><code>{
+  "type": "session.update",
+  "session": {
+    "type": "realtime",
+    "tools": [
+      // Your native function tools (unchanged)
+      { "type": "function", "name": "add_note", ... },
+      { "type": "function", "name": "delete_note", ... },
+
+      // MCP servers added inline
+      {
+        "type": "mcp",
+        "server_label": "notion",
+        "server_url":   "https://mcp.notion.com/sse",
+        "authorization": "Bearer &lt;notion-oauth-token&gt;",
+        "require_approval": "always"
+      },
+      {
+        "type": "mcp",
+        "server_label": "search",
+        "server_url":   "https://mcp.search.example.com/sse",
+        "require_approval": "never",
+        "allowed_tools": ["web_search"]
+      }
+    ]
+  }
+}</code></pre>
+      <p>
+        The model can now call MCP tools as naturally as native ones. Voice command:
+        <em>"add this to my Notion inbox"</em> → the model calls the Notion MCP server
+        → confirmation spoken back.
+      </p>
+    </section>
+
+    <section id="mcp-remote">
+      <h2>Remote MCP Servers</h2>
+      <p>
+        Remote MCP servers speak MCP over HTTP + SSE (or streamable HTTP). They are the
+        <strong>only</strong> flavor usable directly from a browser VCI app — the model
+        connects to them from OpenAI's side, not yours.
+      </p>
+      <h3>Finding servers</h3>
+      <ul>
+        <li>Public directories: <a href="https://mcpservers.org" target="_blank" rel="noopener">mcpservers.org</a>, <a href="https://github.com/modelcontextprotocol/servers" target="_blank" rel="noopener">modelcontextprotocol/servers</a>.</li>
+        <li>First-party: many SaaS vendors now ship their own MCP endpoint (Notion, Linear, GitHub, Slack, Sanity, Vercel, etc.).</li>
+        <li>Roll your own: MCP is spec-based; a minimal server is ~150 lines of code.</li>
+      </ul>
+      <h3>Local (stdio) MCP servers</h3>
+      <p>
+        Local MCP servers (spawned as subprocesses over stdio) <strong>cannot</strong> be
+        used directly from a browser. To integrate them, you need a small backend
+        proxy that connects to the local server and exposes an SSE endpoint — at which
+        point they are functionally remote MCP servers again.
+      </p>
+    </section>
+
+    <section id="mcp-tools">
+      <h2>Wiring MCP Tools</h2>
+      <p>Recommended flow for optional MCP support in your VCI app:</p>
+      <ol>
+        <li>In storage, add a <code>getMcpServers()</code> function returning an array of configured MCP server entries (URL, label, token, approval mode).</li>
+        <li>In the UI, add a small settings panel (still not for domain actions — this is a config surface) where the user can enable/disable MCP servers and paste tokens.</li>
+        <li>In <code>realtime.js</code>, when building the <code>tools</code> array for
+          <code>session.update</code>, concatenate native function tools with configured
+          MCP entries.</li>
+        <li>Re-send <code>session.update</code> whenever MCP config changes so the live
+          session picks up the new tools.</li>
+      </ol>
+<pre><code>function buildTools() {
+  const native = NATIVE_FUNCTION_TOOLS;
+  const mcp = Storage.getMcpServers().map(s =&gt; ({
+    type: "mcp",
+    server_label: s.label,
+    server_url:   s.url,
+    authorization: s.token ? "Bearer " + s.token : undefined,
+    require_approval: s.approvalMode || "always",
+    allowed_tools: s.allowedTools // optional whitelist
+  }));
+  return [...native, ...mcp];
+}</code></pre>
+    </section>
+
+    <section id="mcp-security">
+      <h2>MCP Security &amp; Approvals</h2>
+      <div class="callout danger">
+        <span class="callout-title">MCP is a real security surface</span>
+        Every MCP server you add can, in principle, call arbitrary tools with arbitrary
+        arguments generated by the model. A malicious or compromised server can exfiltrate
+        data via its tool arguments. Treat MCP servers like npm packages: audit before use.
+      </div>
+
+      <h3>Approval modes</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Mode</th><th>Behavior</th><th>Use when</th></tr></thead>
+        <tbody>
+        <tr>
+          <td><code>"always"</code></td>
+          <td>Every MCP tool call surfaces to the user for approval before executing.</td>
+          <td>Third-party servers, anything that mutates external state.</td>
+        </tr>
+        <tr>
+          <td><code>"never"</code></td>
+          <td>MCP tools auto-execute without user confirmation.</td>
+          <td>Trusted first-party read-only servers (e.g. an internal search endpoint you control).</td>
+        </tr>
+        </tbody>
+      </table></div>
+
+      <h3>Token handling</h3>
+      <ul>
+        <li><strong>Personal-use apps:</strong> store MCP auth tokens in <code>localStorage</code>, same trade-off as the OpenAI key.</li>
+        <li><strong>Public apps:</strong> mint short-lived MCP tokens on your backend, hand them to the browser alongside the ephemeral OpenAI token.</li>
+        <li><strong>Whitelist tools</strong> per server via <code>allowed_tools</code> whenever possible — reduces blast radius if the server misbehaves.</li>
+      </ul>
+    </section>
+
+    <section id="mcp-when">
+      <h2>When to Add MCP</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Add MCP when…</th><th>Skip MCP when…</th></tr></thead>
+        <tbody>
+        <tr>
+          <td>You need to reach an external service you don't control (Notion, GitHub, Slack, etc.).</td>
+          <td>The app is entirely local — state stays in <code>localStorage</code>.</td>
+        </tr>
+        <tr>
+          <td>The domain vocabulary is stable and you want to extend it without rewriting the app.</td>
+          <td>You could just add a native function tool with a small <code>fetch</code>.</td>
+        </tr>
+        <tr>
+          <td>A first-party MCP server already exists for the service you need.</td>
+          <td>You're prototyping and don't want the ceremony.</td>
+        </tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ============================== UI Layer ============================== -->
+
+    <section id="three-buttons">
+      <h2>Three-Button Model <span class="chip required">Standard</span></h2>
+      <p>
+        VCI apps use three buttons — <strong>Start Session</strong>,
+        <strong>Push to Talk</strong>, and <strong>End Session</strong>. Implement this
+        verbatim unless you have a specific reason to deviate.
+      </p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Button</th><th>Visible when</th><th>Behavior</th></tr></thead>
+        <tbody>
+        <tr>
+          <td><code>Start Session</code></td>
+          <td><code>disconnected</code></td>
+          <td>Opens the WebRTC connection. Mic starts muted. Assistant briefly greets.</td>
+        </tr>
+        <tr>
+          <td><code>Push to Talk</code></td>
+          <td><code>connected</code></td>
+          <td>Hold to talk (or press Space). On release, audio is committed and the model responds.</td>
+        </tr>
+        <tr>
+          <td><code>End Session</code></td>
+          <td><code>connected</code> / <code>connecting</code></td>
+          <td>Explicitly closes the WebRTC connection.</td>
+        </tr>
+        </tbody>
+      </table></div>
+      <div class="callout">
+        <span class="callout-title">Why three buttons instead of one</span>
+        Separating "session lifecycle" from "user turn" is what makes push-to-talk feel
+        natural. The user opens a session once, then punctuates it with individual PTT
+        presses. Single-button toggles conflate the two and lead to accidental
+        connects/disconnects.
+      </div>
+    </section>
+
+    <section id="session-phases">
+      <h2>Session Phases</h2>
+      <p>The app tracks three phases; button visibility swaps based on the current phase.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Phase</th><th>Meaning</th></tr></thead>
+        <tbody>
+        <tr><td><code>disconnected</code></td><td>No WebRTC connection. Only Start Session visible.</td></tr>
+        <tr><td><code>connecting</code></td><td>Establishing WebRTC + minting ephemeral token.</td></tr>
+        <tr><td><code>connected</code></td><td>Session live, mic muted, waiting for PTT press. PTT + End visible.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="ptt">
+      <h2>Push-to-Talk</h2>
+      <h3>Press (pointerdown or Space keydown)</h3>
+      <ul>
+        <li>Call <code>Realtime.startTurn()</code> — sends <code>input_audio_buffer.clear</code> and sets <code>micTrack.enabled = true</code>.</li>
+        <li>Status → <code>listening</code>. Apply the <code>.is-recording</code> visual state.</li>
+      </ul>
+      <h3>Release (pointerup/pointercancel/pointerleave or Space keyup)</h3>
+      <ul>
+        <li>Call <code>Realtime.endTurn()</code> — sets <code>micTrack.enabled = false</code>, then sends <code>input_audio_buffer.commit</code> and <code>response.create</code>.</li>
+        <li>Status → <code>thinking</code>. Disable PTT briefly (re-enable on <code>response.done</code>).</li>
+      </ul>
+      <h3>Barge-in</h3>
+      <p>
+        If the user presses PTT while the model is still speaking, call
+        <code>Realtime.interruptResponse()</code> (sends <code>response.cancel</code>)
+        <em>before</em> <code>startTurn()</code>.
+      </p>
+      <h3>Skeleton</h3>
+<pre><code>btn.addEventListener("pointerdown", e =&gt; {
+  e.preventDefault();
+  btn.setPointerCapture(e.pointerId);
+  if (responseInFlight) Realtime.interruptResponse();
+  Realtime.startTurn();
+  UI.setPttRecording(true);
+  UI.setStatus("listening", "Listening");
+});
+
+const release = e =&gt; {
+  Realtime.endTurn();
+  UI.setPttRecording(false);
+  UI.setPttEnabled(false); // re-enabled on response.done
+  UI.setStatus("thinking", "Thinking");
+  resetIdleTimer();
+};
+btn.addEventListener("pointerup",     release);
+btn.addEventListener("pointercancel", release);
+
+// Space bar accessibility fallback
+document.addEventListener("keydown", e =&gt; {
+  if (e.code !== "Space" || e.repeat) return;
+  if (isTextInput(e.target)) return;
+  e.preventDefault();
+  startPtt();
+});
+document.addEventListener("keyup", e =&gt; {
+  if (e.code !== "Space") return;
+  e.preventDefault();
+  stopPtt();
+});</code></pre>
+    </section>
+
+    <section id="idle-timeout">
+      <h2>Inactivity Timeout <span class="chip required">Standard</span></h2>
+      <p>Sessions auto-close after <strong>3 minutes</strong> with no PTT activity.</p>
+      <ul>
+        <li>Start a <code>setTimeout</code> when the phase enters <code>connected</code>.</li>
+        <li>Reset the timeout every time PTT is released (i.e. after a completed user turn).</li>
+        <li>On timeout: call <code>endSession()</code>, log <em>"Session auto-closed after 3 minutes of inactivity."</em></li>
+        <li>Clear the timeout when the phase leaves <code>connected</code>.</li>
+      </ul>
+<pre><code>const IDLE_TIMEOUT_MS = 3 * 60 * 1000;
+
+function resetIdleTimer() {
+  clearIdleTimer();
+  if (phase !== "connected") return;
+  idleTimer = setTimeout(() =&gt; {
+    UI.appendLog("(system)",
+      "Session auto-closed after 3 minutes of inactivity.", "info");
+    endSession();
+  }, IDLE_TIMEOUT_MS);
+}</code></pre>
+      <div class="callout warn">
+        <span class="callout-title">Why 3 minutes</span>
+        The Realtime API bills per minute of active connection. An abandoned session
+        left connected can accrue meaningful cost. Three minutes is a good default
+        for personal apps — long enough to think between commands, short enough to
+        avoid runaway bills. Expose it as a constant so apps can tune it.
+      </div>
+    </section>
+
+    <section id="states">
+      <h2>Status Pill</h2>
+      <p>The status pill reflects the moment-to-moment state of the assistant during a session.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+        <tbody>
+        <tr><td><code>idle</code></td><td>No session, or session live but nothing happening.</td></tr>
+        <tr><td><code>listening</code></td><td>User is holding PTT; mic is streaming.</td></tr>
+        <tr><td><code>thinking</code></td><td>Audio committed; model is processing / running a tool.</td></tr>
+        <tr><td><code>speaking</code></td><td>Model streaming its spoken response.</td></tr>
+        <tr><td><code>error</code></td><td>Something failed; details in log.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="ui-requirements">
+      <h2>UI Requirements</h2>
+      <ul>
+        <li><strong>State panel</strong> — renders <code>storage.readState()</code>. Visually distinguish entity states. No click handlers for domain actions.</li>
+        <li><strong>Conversation log</strong> — most recent at bottom, auto-scroll. Populated from transcription + assistant events.</li>
+        <li><strong>Three session buttons</strong> — Start Session, Push to Talk, End Session (see <a href="#three-buttons">§ Three-Button Model</a>). Visibility swaps based on phase; the PTT button pulses while recording.</li>
+        <li><strong>PTT hint text</strong> — one line under the buttons: <em>"Hold Push to Talk (or Space) to speak. Session auto-closes after 3 minutes of silence."</em></li>
+        <li><strong>Status pill</strong> — reflects Status Pill states.</li>
+        <li><strong>API-key panel</strong> — shown on first load; hidden once a key is stored. Include a "reset key" link.</li>
+        <li><strong>Hidden audio element</strong> — <code>&lt;audio id="assistant-audio" autoplay playsinline&gt;</code>. The peer connection's remote track attaches here.</li>
+      </ul>
+    </section>
+
+    <section id="accessibility">
+      <h2>Accessibility</h2>
+      <ul>
+        <li>Give each button an <code>aria-label</code> matching its visible text.</li>
+        <li>Space bar acts as PTT (skip when a text input has focus).</li>
+        <li>Use <code>aria-live="polite"</code> on the status pill and log so screen readers announce changes.</li>
+        <li>The recording state must not rely on color alone — the label text ("Recording…" vs "Hold to Talk") and animation both change.</li>
+        <li>Ensure the read-only state panel is still fully readable by screen readers.</li>
+      </ul>
+    </section>
+
+    <!-- ============================== Security ============================== -->
+
+    <section id="security-personal">
+      <h2>Personal Use</h2>
+      <ul>
+        <li>Store the OpenAI API key in <code>localStorage</code>. Show it in a masked input on first load. Provide a reset link.</li>
+        <li>The browser mints ephemeral tokens directly; acceptable trade-off for single-user tools.</li>
+        <li>Document this trade-off in the README so future users know.</li>
+      </ul>
+      <div class="callout warn">
+        <span class="callout-title">Never commit the key</span>
+        Add <code>.env</code>, <code>API.txt</code>, and any file containing the key to
+        <code>.gitignore</code>. Even for personal projects.
+      </div>
+    </section>
+
+    <section id="security-public">
+      <h2>Public Deployment</h2>
+      <ul>
+        <li>Put a minimal backend in front (Cloudflare Worker, Vercel Function, Express endpoint).</li>
+        <li>The backend holds the API key and calls <code>POST /v1/realtime/client_secrets</code>.</li>
+        <li>Return only the <code>value</code> field to the browser. The browser never sees the real key.</li>
+        <li>Bind an <code>OpenAI-Safety-Identifier</code> header on the server-side token request to attribute usage per end-user.</li>
+        <li>For MCP: mint MCP tokens on the backend, too. Never ship long-lived OAuth tokens to the browser.</li>
+      </ul>
+    </section>
+
+    <!-- ============================== Reference ============================== -->
+
+    <section id="checklist">
+      <h2>Implementation Checklist</h2>
+      <p>Hand this list to the coder alongside a description of the target domain.</p>
+      <ul>
+        <li>[ ] Define the domain data model (single shape per entity, stable id).</li>
+        <li>[ ] Build <code>storage.js</code>: <code>readState()</code> + one mutation per action.</li>
+        <li>[ ] Build tool schemas — flat schema, ≤ 8 tools.</li>
+        <li>[ ] Write session instructions with tone + matching rules + state placeholder.</li>
+        <li>[ ] Build <code>realtime.js</code>. Use <code>gpt-realtime</code>, a natural voice, and <strong>manual turn detection</strong>.</li>
+        <li>[ ] Expose <code>startTurn()</code>, <code>endTurn()</code>, <code>interruptResponse()</code> from <code>realtime.js</code> for PTT wiring.</li>
+        <li>[ ] Implement the three-button model (Start Session, Push to Talk, End Session) per <a href="#three-buttons">§ Three-Button Model</a>.</li>
+        <li>[ ] Implement the 3-minute inactivity auto-close per <a href="#idle-timeout">§ Inactivity Timeout</a>.</li>
+        <li>[ ] Build <code>app.js</code> tool handler — always return <code>current_state</code>.</li>
+        <li>[ ] Call <code>refreshContext()</code> after every mutation.</li>
+        <li>[ ] Build <code>ui.js</code> with all UI Requirements elements.</li>
+        <li>[ ] Add API-key entry (<code>sk-</code> validation, <code>localStorage</code>). Add reset link.</li>
+        <li>[ ] Include the hidden assistant audio element.</li>
+        <li>[ ] Decide whether to include <a href="#mcp-what">MCP support</a>. If yes, follow <a href="#mcp-tools">Wiring MCP Tools</a>.</li>
+        <li>[ ] Handle 401 / 403 / 429 / network errors gracefully.</li>
+        <li>[ ] Handle mic permission denial + unsupported-browser paths.</li>
+        <li>[ ] Verify state persists across reload.</li>
+        <li>[ ] Document browser support + security stance in README.</li>
+      </ul>
+    </section>
+
+    <section id="test-script">
+      <h2>Manual Test Script</h2>
+      <ol>
+        <li><strong>Golden path</strong> — unambiguous command → correct tool call → state mutated → assistant confirms briefly.</li>
+        <li><strong>Ambiguous reference</strong> — assistant asks for clarification, no mutation.</li>
+        <li><strong>Unrelated chit-chat</strong> — assistant chats briefly, no tool call.</li>
+        <li><strong>Empty state read-back</strong> — assistant says something meaningful, not silence.</li>
+        <li><strong>Reload</strong> — UI shows last confirmed state.</li>
+        <li><strong>Invalid API key</strong> — session start fails cleanly, error shown in log.</li>
+        <li><strong>Mic denied</strong> — session start fails cleanly, error shown in log.</li>
+        <li><strong>Interrupt</strong> — user talks over assistant → server VAD interrupts, new turn begins.</li>
+        <li><strong>MCP tool (if enabled)</strong> — voice command triggers MCP call → approval surfaced → executed → confirmed.</li>
+      </ol>
+    </section>
+
+    <section id="environment">
+      <h2>Environment Requirements</h2>
+      <ul>
+        <li>Chrome or Edge on desktop (WebRTC + mic autoplay policy). Firefox and Safari are unofficial.</li>
+        <li>Secure context: <code>http://localhost</code>, <code>file://</code>, or HTTPS.</li>
+        <li>OpenAI API key with Realtime API access.</li>
+        <li>Live internet connection during sessions.</li>
+      </ul>
+    </section>
+
+    <section id="limitations">
+      <h2>Known Limitations</h2>
+      <ul>
+        <li><strong>Cost.</strong> Realtime API bills per minute of input and output audio. Short bursts are cheap; long continuous sessions add up.</li>
+        <li><strong>No offline mode.</strong> Every session requires OpenAI.</li>
+        <li><strong>Occasional hallucination of references.</strong> The <code>current_state</code>-in-every-tool-response pattern mitigates but does not eliminate this. When it matters (irreversible actions), have the model confirm first.</li>
+        <li><strong>Non-English accents.</strong> For non-English users, set <code>audio.input.transcription.language</code> if quality drops.</li>
+        <li><strong>API drift.</strong> Endpoints have already changed once — verify against official docs before implementing.</li>
+      </ul>
+    </section>
+
+    <section id="extensions">
+      <h2>Extension Patterns</h2>
+      <ul>
+        <li><strong>Multi-entity domains</strong> — one tool schema per entity type, prefix tool names with the entity (<code>add_task</code>, <code>add_note</code>). Keep total ≤ 8.</li>
+        <li><strong>Confirmations for destructive actions</strong> — add a <code>confirm: boolean</code> argument, or split into <code>soft_delete</code> + <code>restore</code>.</li>
+        <li><strong>Search/filter as a tool</strong> — expose <code>search(query)</code>; the model can then reference results by id in follow-up turns.</li>
+        <li><strong>Rich responses</strong> — for actions like "read my week", let the model speak longer; server VAD still allows interruption.</li>
+        <li><strong>Client-side wake word</strong> — for "always listening" UX, add a small wake-word detector (e.g. Porcupine) before starting the Realtime session. Do <em>not</em> stream mic to OpenAI 24/7.</li>
+        <li><strong>Multi-modal</strong> — Realtime supports images via <code>input_image</code> items. Useful for a receipt-capture voice app or a "describe this photo" note-taker.</li>
+      </ul>
+    </section>
+
+    <div class="pager">
+      <a href="#introduction"><span class="label">Back to top</span>Introduction</a>
+      <a href="#checklist" style="text-align:right;"><span class="label">Next</span>Implementation Checklist →</a>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // Theme toggle (persists in localStorage)
+  (function () {
+    const KEY = "vci-docs-theme";
+    const html = document.documentElement;
+    const saved = localStorage.getItem(KEY);
+    if (saved === "light") html.classList.add("light");
+    document.getElementById("theme-toggle").addEventListener("click", function () {
+      html.classList.toggle("light");
+      localStorage.setItem(KEY, html.classList.contains("light") ? "light" : "dark");
+    });
+  })();
+
+  // Mobile sidebar toggle
+  (function () {
+    const btn = document.getElementById("menu-toggle");
+    const side = document.getElementById("sidebar");
+    if (!btn || !side) return;
+    btn.addEventListener("click", function () { side.classList.toggle("open"); });
+    document.addEventListener("click", function (e) {
+      if (window.innerWidth > 900) return;
+      if (side.classList.contains("open") &&
+          !side.contains(e.target) &&
+          e.target !== btn) {
+        side.classList.remove("open");
+      }
+    });
+    side.addEventListener("click", function (e) {
+      if (e.target.tagName === "A" && window.innerWidth <= 900) side.classList.remove("open");
+    });
+  })();
+
+  // Active section highlight in the sidebar
+  (function () {
+    const links = Array.from(document.querySelectorAll(".sidebar a[href^='#']"));
+    const bySection = {};
+    links.forEach(function (a) {
+      const id = a.getAttribute("href").slice(1);
+      bySection[id] = a;
+    });
+    const sections = Array.from(document.querySelectorAll("main.content section[id]"));
+    const observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          const id = e.target.id;
+          links.forEach(function (a) { a.classList.remove("active"); });
+          if (bySection[id]) bySection[id].classList.add("active");
+        }
+      });
+    }, { rootMargin: "-30% 0px -60% 0px", threshold: 0 });
+    sections.forEach(function (s) { observer.observe(s); });
+  })();
+
+  // Copy-to-clipboard buttons on <pre> blocks
+  (function () {
+    document.querySelectorAll("main.content pre").forEach(function (pre) {
+      if (pre.classList.contains("diagram")) return;
+      const btn = document.createElement("button");
+      btn.className = "copy-btn";
+      btn.type = "button";
+      btn.textContent = "Copy";
+      btn.addEventListener("click", function () {
+        const code = pre.querySelector("code") || pre;
+        const text = code.innerText;
+        navigator.clipboard.writeText(text).then(function () {
+          btn.textContent = "Copied";
+          setTimeout(function () { btn.textContent = "Copy"; }, 1200);
+        });
+      });
+      pre.appendChild(btn);
+    });
+  })();
+
+  // Lightweight syntax highlighter — regex-based, good enough for JSON + JS snippets.
+  (function () {
+    function escapeHTML(s) {
+      return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+    // Tokenize a string into span-wrapped HTML. Order matters — strings first
+    // so keywords inside strings don't get re-colored.
+    function highlight(src) {
+      // Split into segments of "code" and "stashed HTML". Highlight only
+      // the code segments; leave stashed HTML alone.
+      const segments = []; // array of { type: "code" | "html", text }
+      let i = 0;
+      const rx = /\/\/[^\n]*|\/\*[\s\S]*?\*\/|"(?:\\.|[^"\\])*"|`(?:\\.|[^`\\])*`/g;
+      let m;
+      while ((m = rx.exec(src)) !== null) {
+        if (m.index > i) segments.push({ type: "code", text: src.slice(i, m.index) });
+        const raw = m[0];
+        const cls = raw[0] === "/" ? "tok-com" : "tok-str";
+        segments.push({ type: "html", text: '<span class="' + cls + '">' + escapeHTML(raw) + '</span>' });
+        i = m.index + raw.length;
+      }
+      if (i < src.length) segments.push({ type: "code", text: src.slice(i) });
+
+      return segments.map(seg => {
+        if (seg.type === "html") return seg.text;
+        let s = escapeHTML(seg.text);
+        s = s.replace(
+          /\b(const|let|var|function|return|await|async|new|if|else|for|while|throw|try|catch|import|from|export|default|class|extends|typeof|of|in|null|undefined)\b/g,
+          '<span class="tok-kw">$1</span>'
+        );
+        s = s.replace(/\b(true|false)\b/g, '<span class="tok-bool">$1</span>');
+        s = s.replace(/\b(\d+(?:\.\d+)?)\b/g, '<span class="tok-num">$1</span>');
+        s = s.replace(/\b([a-zA-Z_$][\w$]*)(?=\s*\()/g, '<span class="tok-fn">$1</span>');
+        return s;
+      }).join("");
+    }
+
+    document.querySelectorAll("main.content pre").forEach(function (pre) {
+      if (pre.classList.contains("diagram")) return;
+      const code = pre.querySelector("code");
+      const target = code || pre;
+      const raw = target.textContent;
+      target.innerHTML = highlight(raw);
+    });
+  })();
+</script>
+
+</body>
+</html>
