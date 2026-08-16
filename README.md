@@ -9,6 +9,22 @@ reflection of state — no forms, no buttons for domain actions.
 
 ---
 
+## Demos
+
+### DEMO-01
+
+[![DEMO-01 — VCI walkthrough](https://img.youtube.com/vi/2BkAJLVvpi4/maxresdefault.jpg)](https://youtu.be/2BkAJLVvpi4)
+
+▶️ Watch on YouTube: <https://youtu.be/2BkAJLVvpi4>
+
+### DEMO-02
+
+[![DEMO-02 — VCI walkthrough](https://img.youtube.com/vi/xeTy1f6ZuX4/maxresdefault.jpg)](https://youtu.be/xeTy1f6ZuX4)
+
+▶️ Watch on YouTube: <https://youtu.be/xeTy1f6ZuX4>
+
+---
+
 ## What is VCI?
 
 VCI is a **specification**, not a library. It describes a pattern that any coding
