@@ -1,5 +1,7 @@
 # VCI — Voice Controlled Interface
 
+🌐 **[Live docs → voice-controlled-interface.vercel.app](https://voice-controlled-interface.vercel.app)**
+
 **The cleanest way to build an AI agent that is wired directly into your application.**
 
 VCI is a pattern for building apps where an AI agent — not a floating chatbot,
@@ -7,8 +9,9 @@ not an RPA script clicking buttons — is *the* interface. The agent reads your
 domain state, calls your domain functions through a fixed tool contract, and
 confirms every result out loud. The UI is a read-only reflection of state.
 
-> 📖 **Read the full spec:** [`VCI.md`](./VCI.md)
-> 🌐 **Live docs (styled):** deploy to Vercel (see below) or open [`index.html`](./index.html) locally.
+> 🌐 **Live docs:** [**voice-controlled-interface.vercel.app**](https://voice-controlled-interface.vercel.app) — the full spec, styled and hosted on Vercel.
+> 📖 **Read the spec on GitHub:** [`VCI.md`](./VCI.md)
+> 🖥️ **Run locally:** open [`index.html`](./index.html) in a browser.
 
 ---
 
