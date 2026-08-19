@@ -1,6 +1,13 @@
 {
+  "buildCommand": "npm run build",
+  "outputDirectory": "build",
+  "framework": "docusaurus-2",
   "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    { "source": "/VCI.html", "destination": "/legacy/vci.html", "permanent": false },
+    { "source": "/vci.html", "destination": "/legacy/vci.html", "permanent": false }
+  ],
   "headers": [
     {
       "source": "/(.*)",

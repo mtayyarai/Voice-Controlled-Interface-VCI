@@ -9,9 +9,9 @@ not an RPA script clicking buttons — is *the* interface. The agent reads your
 domain state, calls your domain functions through a fixed tool contract, and
 confirms every result out loud. The UI is a read-only reflection of state.
 
-> 🌐 **Live docs:** [**voice-controlled-interface.vercel.app**](https://voice-controlled-interface.vercel.app) — the full spec, styled and hosted on Vercel.
-> 📖 **Read the spec on GitHub:** [`VCI.md`](./VCI.md)
-> 🖥️ **Run locally:** open [`index.html`](./index.html) in a browser.
+> 🌐 **Live docs:** [**voice-controlled-interface.vercel.app**](https://voice-controlled-interface.vercel.app) — powered by Docusaurus, hosted on Vercel.
+> 📖 **Read the spec on GitHub:** [`VCI.md`](./VCI.md) (single-file source).
+> 🗂️ **Browse the spec in the docs site:** the `docs/` directory contains the same spec split into per-section pages.
 
 ---
 
@@ -121,12 +121,16 @@ and returns the fresh state.
 
 ## Repository contents
 
-| File          | Purpose                                                                  |
-| ------------- | ------------------------------------------------------------------------ |
-| `VCI.md`      | The framework specification. Hand this to a coding agent to build an app. |
-| `VCI.html`    | The same spec, rendered as a styled single-file documentation site.       |
-| `index.html`  | Copy of `VCI.html` — the entry point Vercel serves at `/`.                |
-| `vercel.json` | Static-hosting config for Vercel.                                        |
+| Path                     | Purpose                                                                  |
+| ------------------------ | ------------------------------------------------------------------------ |
+| `VCI.md`                 | The framework specification — single-file source. Hand this to a coding agent to build an app. |
+| `docs/`                  | The same spec, split into per-section pages for the Docusaurus site.     |
+| `src/`                   | Custom landing page (`pages/index.js`) and theme CSS (`css/custom.css`). |
+| `static/`                | Static assets — logo, favicon, and the legacy single-file spec at `static/legacy/vci.html`. |
+| `docusaurus.config.js`   | Docusaurus site configuration.                                           |
+| `sidebars.js`            | Docs sidebar structure.                                                  |
+| `package.json`           | Node dependencies + scripts (`start`, `build`, `serve`).                 |
+| `vercel.json`            | Vercel build + hosting config.                                           |
 
 ---
 
@@ -134,7 +138,7 @@ and returns the fresh state.
 
 ### 1. Read the spec
 
-Start with [`VCI.md`](./VCI.md). It covers:
+Start with [`VCI.md`](./VCI.md) or [the docs site](https://voice-controlled-interface.vercel.app/docs/intro). It covers:
 
 - Philosophy and when to (not) use VCI
 - Architecture (WebRTC + Realtime API)
@@ -151,8 +155,8 @@ Start with [`VCI.md`](./VCI.md). It covers:
 
 The spec is written to be handed *verbatim* to a coding agent (Claude Code,
 Cursor, Copilot Chat, etc.) alongside a description of your target domain.
-The **Implementation checklist** in § 12 of `VCI.md` is a task list the agent can
-work through directly.
+The **Implementation checklist** ([`docs/implementation-checklist.md`](./docs/implementation-checklist.md))
+is a task list the agent can work through directly.
 
 ### 3. Follow the file-layout convention
 
@@ -169,23 +173,40 @@ work through directly.
 
 ### 4. Verify with the manual test script
 
-§ 13 of `VCI.md` lists the manual tests every VCI app should pass — golden path,
-ambiguous reference, chit-chat, empty state, reload, invalid key, mic denied, and
-barge-in / interrupt.
+[`docs/manual-test.md`](./docs/manual-test.md) lists the manual tests every VCI
+app should pass — golden path, ambiguous reference, chit-chat, empty state,
+reload, invalid key, mic denied, and barge-in / interrupt.
 
 ---
 
-## Deploy the docs to Vercel
+## Local development (docs site)
 
-The `index.html` in this repo is fully self-contained (inline CSS + JS, no build
-step). Any static host works; Vercel is easiest.
+The docs site is a standard Docusaurus 3 project.
+
+```bash
+npm install           # first time only
+npm run start         # local dev server on http://localhost:3000
+npm run build         # static build → ./build
+npm run serve         # serve the production build locally
+```
+
+Docs pages live in `docs/*.md`. The sidebar order is controlled by
+[`sidebars.js`](./sidebars.js). The landing page is
+[`src/pages/index.js`](./src/pages/index.js), and the theme accents come from
+[`src/css/custom.css`](./src/css/custom.css).
+
+---
+
+## Deploy to Vercel
+
+The [`vercel.json`](./vercel.json) at the root already tells Vercel to
+build with `npm run build` and serve `./build`. No manual config needed.
 
 ### Option A — one-click via the Vercel dashboard
 
-1. Push this repo to GitHub (see below).
+1. Push this repo to GitHub.
 2. Go to [vercel.com/new](https://vercel.com/new) and import the repo.
-3. Framework preset: **Other**. Build command: *(none)*. Output directory: `.`.
-4. Deploy.
+3. Vercel auto-detects Docusaurus. Accept the defaults and deploy.
 
 ### Option B — Vercel CLI
 
@@ -195,23 +216,10 @@ vercel        # first deploy (preview)
 vercel --prod # promote to production
 ```
 
-The `vercel.json` in this repo already configures static hosting; no build step
-runs.
-
----
-
-## Push to GitHub
-
-If you haven't yet published this repo:
-
-```bash
-git init
-git add .
-git commit -m "Initial VCI framework spec + docs site"
-git branch -M main
-git remote add origin https://github.com/mtayyarai/Voice-Controlled-Interface-VCI.git
-git push -u origin main
-```
+The old single-file spec still lives at
+[`/legacy/vci.html`](https://voice-controlled-interface.vercel.app/legacy/vci.html)
+so any external links to `VCI.html` on the old deploy keep working (there's a
+redirect in `vercel.json`).
 
 ---
 
@@ -224,7 +232,7 @@ is acceptable for a tool only you use on your own device.
 **For anything public**, put a minimal backend in front (Cloudflare Worker, Vercel
 Function, Express endpoint). The backend holds the API key, calls
 `POST /v1/realtime/client_secrets`, and returns only the `value` field to the
-browser. See § 10 of `VCI.md`.
+browser. See [`docs/security.md`](./docs/security.md).
 
 **Never commit an API key.** The `.gitignore` in this repo already excludes
 `.env` and common key files.

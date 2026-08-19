@@ -7,12 +7,14 @@ API.txt
 *.pem
 secrets/
 
-# Node / Vercel
+# Node / Vercel / Docusaurus
 node_modules/
 .vercel/
 .next/
 dist/
 build/
+.docusaurus/
+.cache-loader/
 
 # OS / editor
 .DS_Store

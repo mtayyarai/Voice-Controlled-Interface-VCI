@@ -1,0 +1,251 @@
+/**
+ * VCI Docusaurus theme — matched to the accent palette from the
+ * original single-file VCI.html (blue → purple → pink gradient).
+ */
+
+:root {
+  --ifm-color-primary: #7c8cff;
+  --ifm-color-primary-dark: #6272ff;
+  --ifm-color-primary-darker: #5262ff;
+  --ifm-color-primary-darkest: #2f3fff;
+  --ifm-color-primary-light: #96a2ff;
+  --ifm-color-primary-lighter: #a6b0ff;
+  --ifm-color-primary-lightest: #cfd5ff;
+
+  --ifm-code-font-size: 92%;
+  --ifm-font-family-base: -apple-system, BlinkMacSystemFont, 'Inter',
+    'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --ifm-font-family-monospace: 'JetBrains Mono', 'Fira Code',
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  --docusaurus-highlighted-code-line-bg: rgba(124, 140, 255, 0.12);
+
+  --vci-accent-2: #b072ff;
+  --vci-pink: #ff7aa8;
+  --vci-gradient: linear-gradient(
+    120deg,
+    #7c8cff 0%,
+    #b072ff 45%,
+    #ff7aa8 100%
+  );
+}
+
+[data-theme='dark'] {
+  --ifm-background-color: #0a0b10;
+  --ifm-background-surface-color: #14161e;
+  --ifm-color-primary: #94a2ff;
+  --ifm-color-primary-dark: #7c8cff;
+  --ifm-color-primary-darker: #6272ff;
+  --ifm-color-primary-darkest: #4252ff;
+  --ifm-color-primary-light: #a6b0ff;
+  --ifm-color-primary-lighter: #b8c0ff;
+  --ifm-color-primary-lightest: #d4d8ff;
+
+  --docusaurus-highlighted-code-line-bg: rgba(124, 140, 255, 0.18);
+}
+
+/* Landing page — hero */
+.vci-hero {
+  padding: 5rem 0 4rem;
+  background:
+    radial-gradient(
+      1000px 500px at 20% -10%,
+      rgba(124, 140, 255, 0.18),
+      transparent 60%
+    ),
+    radial-gradient(
+      800px 500px at 90% 10%,
+      rgba(176, 114, 255, 0.15),
+      transparent 60%
+    ),
+    radial-gradient(
+      700px 500px at 60% 40%,
+      rgba(255, 122, 168, 0.12),
+      transparent 60%
+    );
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.vci-hero__eyebrow {
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ifm-color-primary);
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.vci-hero__title {
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  line-height: 1.08;
+  font-weight: 700;
+  margin: 0 0 1rem;
+  letter-spacing: -0.02em;
+}
+
+.vci-hero__title-gradient {
+  background: var(--vci-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.vci-hero__subtitle {
+  font-size: 1.2rem;
+  line-height: 1.55;
+  color: var(--ifm-color-emphasis-700);
+  max-width: 46rem;
+  margin-bottom: 2rem;
+}
+
+.vci-hero__actions {
+  display: flex;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.vci-hero__actions .button {
+  min-width: 12rem;
+}
+
+/* Sections */
+.vci-section {
+  padding: 4rem 0;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.vci-section:last-child {
+  border-bottom: none;
+}
+
+.vci-section__eyebrow {
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ifm-color-primary);
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.vci-section__title {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin: 0 0 0.75rem;
+}
+
+.vci-section__lede {
+  font-size: 1.05rem;
+  color: var(--ifm-color-emphasis-700);
+  max-width: 44rem;
+  margin-bottom: 2rem;
+}
+
+/* Feature grid */
+.vci-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.vci-feature {
+  padding: 1.25rem 1.4rem;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 12px;
+  background: var(--ifm-background-surface-color);
+  transition: transform 120ms ease, border-color 120ms ease;
+}
+
+.vci-feature:hover {
+  transform: translateY(-2px);
+  border-color: var(--ifm-color-primary);
+}
+
+.vci-feature__title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0 0 0.4rem;
+}
+
+.vci-feature__body {
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ASCII diagram block */
+.vci-diagram {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.78rem;
+  line-height: 1.35;
+  white-space: pre;
+  overflow-x: auto;
+  padding: 1.25rem 1.5rem;
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 12px;
+  color: var(--ifm-color-emphasis-800);
+}
+
+/* Comparison table */
+.vci-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.vci-table th,
+.vci-table td {
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  text-align: left;
+  vertical-align: top;
+}
+
+.vci-table thead th {
+  background: var(--ifm-color-emphasis-100);
+  font-weight: 600;
+}
+
+.vci-table tbody tr.vci-table__highlight {
+  background: rgba(124, 140, 255, 0.08);
+}
+
+/* Demos */
+.vci-demos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.vci-demo {
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--ifm-background-surface-color);
+}
+
+.vci-demo__thumb {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.vci-demo__body {
+  padding: 1rem 1.2rem 1.2rem;
+}
+
+.vci-demo__title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.35rem;
+}
+
+.vci-demo__desc {
+  font-size: 0.9rem;
+  color: var(--ifm-color-emphasis-700);
+  margin: 0;
+}
