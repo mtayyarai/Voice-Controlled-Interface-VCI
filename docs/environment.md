@@ -1,7 +1,7 @@
 ---
 id: environment
 title: Environment requirements
-sidebar_position: 15
+sidebar_position: 16
 description: Browser + network requirements — Chrome/Edge desktop, HTTPS or localhost, OpenAI API key with Realtime access.
 ---
 

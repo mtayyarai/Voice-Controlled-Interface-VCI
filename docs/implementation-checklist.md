@@ -1,7 +1,7 @@
 ---
 id: implementation-checklist
 title: Implementation checklist
-sidebar_position: 13
+sidebar_position: 14
 description: A task list a coding agent can work through directly — from data model definition through error handling.
 ---
 
@@ -35,6 +35,8 @@ domain.
 - [ ] Build `ui.js` with all elements from [UI requirements](./ui-requirements).
 - [ ] Add API-key entry with `sk-` validation and `localStorage`
       persistence. Add reset-key link.
+- [ ] Decide whether to include [MCP support](./mcp-support). If yes,
+      follow [Wiring MCP tools](./mcp-support#wiring-mcp-tools).
 - [ ] Include the `<audio id="assistant-audio">` element in the HTML.
 - [ ] Handle mic permission denial + WebRTC/`getUserMedia`
       unsupported-browser paths.

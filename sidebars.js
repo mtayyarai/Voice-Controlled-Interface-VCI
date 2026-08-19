@@ -25,6 +25,7 @@ const sidebars = {
         'webrtc-recipe',
         'session-lifecycle',
         'ui-requirements',
+        'mcp-support',
         'security',
         'file-layout',
       ],

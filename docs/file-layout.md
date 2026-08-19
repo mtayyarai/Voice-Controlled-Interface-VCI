@@ -1,7 +1,7 @@
 ---
 id: file-layout
 title: File layout convention
-sidebar_position: 12
+sidebar_position: 13
 description: Recommended module boundaries — index.html, css/styles.css, and four JS files. Keep each under ~300 lines.
 ---
 

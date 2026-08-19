@@ -1,7 +1,7 @@
 ---
 id: extension-patterns
 title: Extension patterns
-sidebar_position: 17
+sidebar_position: 18
 description: Multi-entity domains, destructive-action confirmations, search-as-a-tool, rich responses, and client-side wake words.
 ---
 

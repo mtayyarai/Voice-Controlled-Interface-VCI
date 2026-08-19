@@ -1,7 +1,7 @@
 ---
 id: security
 title: Security
-sidebar_position: 11
+sidebar_position: 12
 description: Personal vs public deployment — when it's OK to store the API key in localStorage vs when you need a token-minting backend.
 ---
 
@@ -18,6 +18,9 @@ description: Personal vs public deployment — when it's OK to store the API key
   key.
 - Bind an `OpenAI-Safety-Identifier` header on the server-side token
   request to attribute usage per end-user.
+- **For MCP:** mint MCP tokens on the backend, too. Never ship long-lived
+  OAuth tokens to the browser. See
+  [MCP security & approvals](./mcp-support#mcp-security--approvals).
 
 :::warning
 The default guidance in this spec (API key in `localStorage`) is only

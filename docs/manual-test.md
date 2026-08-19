@@ -1,7 +1,7 @@
 ---
 id: manual-test
 title: Manual test script
-sidebar_position: 14
+sidebar_position: 15
 description: Eight scenarios every VCI app should pass — golden path, ambiguous reference, chit-chat, empty state, reload, invalid key, mic denied, interrupt.
 ---
 
@@ -21,3 +21,6 @@ For each domain action, verify:
 7. **Mic denied** — session start fails cleanly, error shown in log.
 8. **Interrupt** — user talks over the assistant → server VAD interrupts
    the response and starts a new turn.
+9. **MCP tool (if enabled)** — voice command triggers an MCP call →
+   approval prompt surfaced (for `require_approval: "always"`) →
+   executed → confirmed. See [MCP Support](./mcp-support).

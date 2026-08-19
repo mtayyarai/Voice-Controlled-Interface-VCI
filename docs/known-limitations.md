@@ -1,7 +1,7 @@
 ---
 id: known-limitations
 title: Known limitations
-sidebar_position: 16
+sidebar_position: 17
 description: Cost, offline mode, hallucination of references, non-English accents, and API drift — the honest trade-offs of the VCI pattern.
 ---
 

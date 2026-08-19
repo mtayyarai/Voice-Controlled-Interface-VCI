@@ -148,6 +148,7 @@ Start with [`VCI.md`](./VCI.md) or [the docs site](https://voice-controlled-inte
 - A full WebRTC connection recipe
 - Session lifecycle, Push-to-Talk, and the 3-minute idle timeout
 - UI requirements and accessibility
+- Optional MCP (Model Context Protocol) support for reaching external services
 - Security (personal vs public deployment)
 - Implementation checklist + manual test script
 
